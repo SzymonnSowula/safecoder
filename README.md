@@ -242,6 +242,21 @@ PRs welcome. Open an issue if you find a common AI-generated vulnerability that 
 
 ---
 
+## Publishing to npm
+
+1. Create an npm account at https://www.npmjs.com/signup.
+2. Log in locally:
+   ```bash
+   npm login
+   ```
+3. Publish from the repo root:
+   ```bash
+   cd safecoder
+   npm publish --access public
+   ```
+
+After the first publish, you can also enable the GitHub Action `.github/workflows/npm-publish.yml` by adding an `NPM_TOKEN` secret to the repository settings. Then every GitHub release will auto-publish.
+
 ## License
 
 MIT
