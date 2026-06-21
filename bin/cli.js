@@ -27,8 +27,9 @@ Commands:
   help            Show this help
 
 Examples:
-  npx @szymonsdev/safecoder install
-  npx @szymonsdev/safecoder init
+  npm install @szymonsdev/safecoder
+  npx safecoder install
+  npx safecoder init
 `);
 }
 

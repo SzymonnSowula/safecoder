@@ -37,10 +37,11 @@ Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any co
 bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main/install.sh)
 ```
 
-Lub przez npm:
+Lub przez npm (zalecane):
 
 ```bash
-npx @szymonsdev/safecoder install
+npm install @szymonsdev/safecoder
+npx safecoder install
 ```
 
 To dodaje skill i aliasy:
@@ -64,7 +65,7 @@ npx skills add SzymonnSowula/safecoder@safecoder
 ### Initialize a project
 
 ```bash
-npx @szymonsdev/safecoder init
+npx safecoder init
 ```
 
 Tworzy w projekcie:
@@ -95,7 +96,7 @@ safecoder/
 ├── install.sh                         # One-line installer for Hermes
 ├── init-project.sh                    # Adds SafeCoder files to a project
 ├── bin/
-│   └── cli.js                            # npx @szymonsdev/safecoder install / init
+│   └── cli.js                            # npx safecoder install / init
 ├── scripts/
 │   └── sync-vercel-skill.sh            # Syncs skill layout for Vercel Skills
 ├── .github/workflows/security-audit.yml  # CI workflow
@@ -244,18 +245,17 @@ PRs welcome. Open an issue if you find a common AI-generated vulnerability that 
 
 ## Publishing to npm
 
-1. Create an npm account at https://www.npmjs.com/signup.
-2. Log in locally:
+Published as [`@szymonsdev/safecoder`](https://www.npmjs.com/package/@szymonsdev/safecoder).
+
+To publish a new version:
+
+1. Bump `version` in `package.json`.
+2. Run:
    ```bash
-   npm login
-   ```
-3. Publish from the repo root:
-   ```bash
-   cd safecoder
    npm publish --access=public
    ```
 
-After the first publish, you can also enable the GitHub Action `.github/workflows/npm-publish.yml` by adding an `NPM_TOKEN` secret to the repository settings. Then every GitHub release will auto-publish.
+For automated publishing, add an `NPM_TOKEN` secret to the repository settings. The GitHub Action in `.github/workflows/npm-publish.yml` will publish on every GitHub release.
 
 ## License
 
