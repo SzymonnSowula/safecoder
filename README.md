@@ -31,19 +31,45 @@ Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any co
 
 ## Quick start
 
-### Use with Hermes Agent
+### Hermes Agent — one-line install
 
 ```bash
-# Clone this repo
-git clone https://github.com/SzymonnSowula/safecoder.git
-
-# Copy the skill into your Hermes skills directory
-cp -r safecoder/skills/software-development/safecoder \
-  ~/.hermes/skills/software-development/
-
-# Use it in any session
-# "Apply SafeCoder to this project before we finish."
+bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main/install.sh)
 ```
+
+This installs the skill and adds shell aliases:
+
+```bash
+hermes-web   # hermes -s safecoder
+hermes-app   # hermes -s safecoder
+hermes-api   # hermes -s safecoder
+```
+
+Start a new terminal, then run `hermes-web` before building any web project.
+
+### Manual install (Hermes Agent)
+
+```bash
+git clone https://github.com/SzymonnSowula/safecoder.git
+cd safecoder
+bash install.sh
+```
+
+### Initialize a project
+
+Inside your project root:
+
+```bash
+bash /path/to/safecoder/init-project.sh
+```
+
+This creates:
+
+- `AGENT_SECURITY.md` — drop-in agent prompt
+- `.env.example` — safe environment template
+- `scripts/security-audit.sh` — local audit
+- `SECURITY.md` — project security policy
+- `.github/workflows/security-audit.yml` — if `.github/workflows` exists
 
 ### Use with Claude Code / Codex / OpenCode
 
@@ -61,6 +87,8 @@ Or paste the short prompt from `templates/PROMPT.md` into context.
 safecoder/
 ├── README.md
 ├── LICENSE
+├── install.sh                         # One-line installer for Hermes
+├── init-project.sh                    # Adds SafeCoder files to a project
 ├── .github/workflows/security-audit.yml  # CI workflow
 └── skills/software-development/safecoder/
     ├── SKILL.md                            # Main agent instructions

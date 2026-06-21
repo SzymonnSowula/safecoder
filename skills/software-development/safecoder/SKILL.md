@@ -52,6 +52,34 @@ For every feature you build, run this loop:
 
 Default stance: **secure first, relax only with explicit user approval.**
 
+## Installing and Auto-Loading This Skill
+
+### For Hermes Agent users
+
+Use the installer:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main/install.sh)
+```
+
+It copies the skill into `~/.hermes/skills/software-development/safecoder/` and adds aliases:
+
+- `hermes-web`
+- `hermes-app`
+- `hermes-api`
+
+Each alias runs `hermes -s safecoder`. Use them whenever you start a web/app/API project.
+
+To add SafeCoder files to a project:
+
+```bash
+bash /path/to/safecoder/init-project.sh
+```
+
+### For other agents (Claude Code / Codex / OpenCode)
+
+Copy `templates/PROMPT.md` into your project as `AGENT_SECURITY.md` and load it into context.
+
 ## Core Security Rules
 
 ### 1. Rate Limiting
