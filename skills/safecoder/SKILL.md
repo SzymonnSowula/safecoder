@@ -62,6 +62,12 @@ Use the installer:
 bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main/install.sh)
 ```
 
+Or install through npm:
+
+```bash
+npx safecoder install
+```
+
 It copies the skill into `~/.hermes/skills/software-development/safecoder/` and adds aliases:
 
 - `hermes-web`
