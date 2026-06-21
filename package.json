@@ -1,0 +1,49 @@
+{
+  "name": "safecoder",
+  "version": "2.1.0",
+  "description": "Security guardrails for AI coding agents. Install the safecoder skill and initialize projects with secure defaults.",
+  "main": "index.js",
+  "bin": {
+    "safecoder": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/",
+    "skills/safecoder/",
+    "skills/software-development/safecoder/",
+    "install.sh",
+    "init-project.sh",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "sync": "bash scripts/sync-vercel-skill.sh",
+    "prepare": "bash scripts/sync-vercel-skill.sh"
+  },
+  "keywords": [
+    "ai-agents",
+    "security",
+    "skills",
+    "claude",
+    "codex",
+    "hermes",
+    "safe-code",
+    "rate-limiting",
+    "xss",
+    "prompt-injection"
+  ],
+  "author": "Szymon Sowula",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SzymonnSowula/safecoder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SzymonnSowula/safecoder/issues"
+  },
+  "homepage": "https://github.com/SzymonnSowula/safecoder#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

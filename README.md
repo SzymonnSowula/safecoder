@@ -37,7 +37,13 @@ Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any co
 bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main/install.sh)
 ```
 
-This installs the skill and adds shell aliases:
+Lub przez npm:
+
+```bash
+npx safecoder install
+```
+
+To dodaje skill i aliasy:
 
 ```bash
 hermes-web   # hermes -s safecoder
@@ -47,37 +53,35 @@ hermes-api   # hermes -s safecoder
 
 Start a new terminal, then run `hermes-web` before building any web project.
 
-### Manual install (Hermes Agent)
+### Vercel Skills / open agent skills
+
+SafeCoder jest kompatybilny z `npx skills`:
 
 ```bash
-git clone https://github.com/SzymonnSowula/safecoder.git
-cd safecoder
-bash install.sh
+npx skills add SzymonnSowula/safecoder@safecoder
 ```
 
 ### Initialize a project
 
-Inside your project root:
-
 ```bash
-bash /path/to/safecoder/init-project.sh
+npx safecoder init
 ```
 
-This creates:
+Tworzy w projekcie:
 
-- `AGENT_SECURITY.md` — drop-in agent prompt
-- `.env.example` — safe environment template
-- `scripts/security-audit.sh` — local audit
-- `SECURITY.md` — project security policy
-- `.github/workflows/security-audit.yml` — if `.github/workflows` exists
+- `AGENT_SECURITY.md`
+- `.env.example`
+- `scripts/security-audit.sh`
+- `SECURITY.md`
+- `.github/workflows/security-audit.yml` (jeśli istnieje `.github/workflows`)
 
 ### Use with Claude Code / Codex / OpenCode
 
-Copy `skills/software-development/safecoder/SKILL.md` into your project as `AGENT_SECURITY.md` and tell the agent:
+Copy `skills/safecoder/SKILL.md` into your project as `AGENT_SECURITY.md` and tell the agent:
 
 > "Follow the security requirements in AGENT_SECURITY.md for every feature you build."
 
-Or paste the short prompt from `templates/PROMPT.md` into context.
+Or paste the short prompt from `skills/safecoder/templates/PROMPT.md` into context.
 
 ---
 
@@ -87,32 +91,42 @@ Or paste the short prompt from `templates/PROMPT.md` into context.
 safecoder/
 ├── README.md
 ├── LICENSE
+├── package.json                       # npm package + CLI
 ├── install.sh                         # One-line installer for Hermes
 ├── init-project.sh                    # Adds SafeCoder files to a project
+├── bin/
+│   └── cli.js                            # npx safecoder install / init
+├── scripts/
+│   └── sync-vercel-skill.sh            # Syncs skill layout for Vercel Skills
 ├── .github/workflows/security-audit.yml  # CI workflow
-└── skills/software-development/safecoder/
-    ├── SKILL.md                            # Main agent instructions
+├── skills/safecoder/                     # Vercel Skills layout
+│   ├── SKILL.md
+│   ├── references/
+│   ├── templates/
+│   └── scripts/
+└── skills/software-development/safecoder/  # Hermes skill layout
+    ├── SKILL.md
     ├── references/
-    │   ├── security-checklist.md           # Pre-ship checklist
-    │   ├── rate-limiting-patterns.md       # IP / user / endpoint rules
-    │   ├── xss-prevention.md               # Output encoding + CSP
-    │   ├── prompt-injection-defense.md     # LLM hardening
-    │   ├── auth-patterns.md                # Email verify, sessions, authz
-    │   ├── jwt-oauth2-patterns.md          # Tokens and OAuth2
-    │   ├── file-upload-security.md         # Safe uploads
-    │   ├── cors-guide.md                   # CORS configuration
-    │   ├── logging-monitoring.md           # Safe logging
-    │   ├── ci-cd-security.md               # Pipeline security
-    │   ├── api-design-security.md          # API hardening
-    │   └── owasp-top-10-for-ai-apps.md     # Mapped threats
+    │   ├── security-checklist.md
+    │   ├── rate-limiting-patterns.md
+    │   ├── xss-prevention.md
+    │   ├── prompt-injection-defense.md
+    │   ├── auth-patterns.md
+    │   ├── jwt-oauth2-patterns.md
+    │   ├── file-upload-security.md
+    │   ├── cors-guide.md
+    │   ├── logging-monitoring.md
+    │   ├── ci-cd-security.md
+    │   ├── api-design-security.md
+    │   └── owasp-top-10-for-ai-apps.md
     ├── templates/
-    │   ├── env.example                     # Safe environment template
-    │   ├── security-config.yaml            # Example rate-limit / CSP config
-    │   ├── security-decision-record.md     # SDR template
-    │   ├── SECURITY.md                     # Project security policy template
-    │   └── PROMPT.md                       # Copy-paste agent prompt
+    │   ├── env.example
+    │   ├── security-config.yaml
+    │   ├── security-decision-record.md
+    │   ├── SECURITY.md
+    │   └── PROMPT.md
     └── scripts/
-        └── security-audit.sh               # Fast local audit script
+        └── security-audit.sh
 ```
 
 ---
