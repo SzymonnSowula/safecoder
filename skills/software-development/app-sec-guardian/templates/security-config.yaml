@@ -1,0 +1,53 @@
+# Example security configuration.
+# Adapt to your framework and threat model.
+
+rate_limits:
+  - path: "/auth/*"
+    window: "5m"
+    max: 5
+    key: ip
+
+  - path: "/api/contact"
+    window: "1h"
+    max: 3
+    key: ip
+
+  - path: "/api/ai/*"
+    window: "1m"
+    max: 10
+    key: user_id
+
+  - path: "/api/admin/*"
+    window: "1m"
+    max: 20
+    key: "user_id+ip"
+
+security_headers:
+  Content-Security-Policy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+  X-Frame-Options: "DENY"
+  X-Content-Type-Options: "nosniff"
+  Referrer-Policy: "strict-origin-when-cross-origin"
+  Permissions-Policy: "geolocation=(), microphone=(), camera=()"
+  Strict-Transport-Security: "max-age=63072000; includeSubDomains; preload"
+
+auth:
+  require_email_verification: true
+  verification_token_ttl: "1h"
+  password_hash_algorithm: "argon2id"
+  session_cookie:
+    http_only: true
+    secure: true
+    same_site: "Strict"
+    max_age: "7d"
+
+secrets:
+  scan_commits: true
+  allowed_in_frontend:
+    - NEXT_PUBLIC_SUPABASE_URL
+    - NEXT_PUBLIC_SUPABASE_ANON_KEY
+  blocked_in_frontend:
+    - OPENAI_API_KEY
+    - SUPABASE_SERVICE_ROLE_KEY
+    - DATABASE_URL
+    - STRIPE_SECRET_KEY
+    - APP_SECRET
