@@ -1,10 +1,10 @@
 # 🛡️ SafeCoder
 
-> Security guardrails for AI coding agents. Stop shipping apps with API keys in the frontend, missing rate limits, and open signup spam.
+> Security guardrails for AI coding agents. Stop shipping apps with API keys in the frontend, missing rate limits, open signup spam, SQL injection, and prompt injection.
 
-AI agents ship **working** apps, not **safe** ones. This skill turns every build into a security review by default — rate limiting, email verification, secret management, XSS hardening, prompt injection defense, and more.
+AI agents ship **working** apps, not **safe** ones. SafeCoder turns every build into a structured security review — rate limiting, email verification, secret management, XSS/CSRF/CSP hardening, SQL/command/path injection prevention, prompt injection defense, authorization, secure CI/CD, and more.
 
-Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any other coding agent that reads markdown instructions.
+Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any coding agent that reads markdown instructions.
 
 ---
 
@@ -17,9 +17,15 @@ Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any ot
 | API keys in frontend | Inspect Element → free access to your Firebase/Supabase/OpenAI keys | Keys live on the backend only |
 | XSS | User input rendered as code | Output encoding, CSP, sanitized HTML |
 | Prompt injection | LLM ignores system instructions via user input | Instruction boundaries, allow-lists, output validation |
-| Secrets in git | Leaked `.env` files in commits | Pre-commit hooks + `.env.example` pattern |
-| Missing authz | Authenticated users accessing each other's data | Resource-level authorization checks |
+| SQL injection | Database theft, data loss | Parameterized queries / ORM |
+| Command injection | Server compromise | No user input in shell commands |
+| Path traversal | Unauthorized file access | Validate paths, random file IDs |
+| Insecure file uploads | Malware, RCE | Allow-list MIME/types, size limits, sandbox |
+| Missing authz | Users accessing each other's data | Resource-level ownership checks |
 | Insecure headers | Clickjacking, MIME sniffing, referrer leaks | Security headers by default |
+| Bad CORS | Cross-site authenticated requests | Exact-origin allow-list |
+| Leaked secrets in git | Keys exposed forever | Pre-commit hooks + `.env.example` pattern |
+| Insecure CI/CD | Secrets in workflows, unreviewed deploys | Secret manager + branch protection |
 
 ---
 
@@ -41,9 +47,11 @@ cp -r safecoder/skills/software-development/safecoder \
 
 ### Use with Claude Code / Codex / OpenCode
 
-Copy `skills/software-development/safecoder/SKILL.md` into your project as `AGENT_SECURITY.md` (or paste it into context) and tell the agent:
+Copy `skills/software-development/safecoder/SKILL.md` into your project as `AGENT_SECURITY.md` and tell the agent:
 
 > "Follow the security requirements in AGENT_SECURITY.md for every feature you build."
+
+Or paste the short prompt from `templates/PROMPT.md` into context.
 
 ---
 
@@ -52,19 +60,31 @@ Copy `skills/software-development/safecoder/SKILL.md` into your project as `AGEN
 ```
 safecoder/
 ├── README.md
+├── LICENSE
+├── .github/workflows/security-audit.yml  # CI workflow
 └── skills/software-development/safecoder/
-    ├── SKILL.md                         # Main agent instructions
+    ├── SKILL.md                            # Main agent instructions
     ├── references/
-    │   ├── security-checklist.md        # Pre-ship checklist
-    │   ├── rate-limiting-patterns.md    # IP / user / endpoint rules
-    │   ├── xss-prevention.md            # Output encoding + CSP guide
-    │   ├── prompt-injection-defense.md  # LLM input/output hardening
-    │   └── auth-patterns.md             # Email verify, sessions, authz
+    │   ├── security-checklist.md           # Pre-ship checklist
+    │   ├── rate-limiting-patterns.md       # IP / user / endpoint rules
+    │   ├── xss-prevention.md               # Output encoding + CSP
+    │   ├── prompt-injection-defense.md     # LLM hardening
+    │   ├── auth-patterns.md                # Email verify, sessions, authz
+    │   ├── jwt-oauth2-patterns.md          # Tokens and OAuth2
+    │   ├── file-upload-security.md         # Safe uploads
+    │   ├── cors-guide.md                   # CORS configuration
+    │   ├── logging-monitoring.md           # Safe logging
+    │   ├── ci-cd-security.md               # Pipeline security
+    │   ├── api-design-security.md          # API hardening
+    │   └── owasp-top-10-for-ai-apps.md     # Mapped threats
     ├── templates/
-    │   ├── env.example                  # Safe environment template
-    │   └── security-config.yaml         # Example rate-limit / CSP config
+    │   ├── env.example                     # Safe environment template
+    │   ├── security-config.yaml            # Example rate-limit / CSP config
+    │   ├── security-decision-record.md     # SDR template
+    │   ├── SECURITY.md                     # Project security policy template
+    │   └── PROMPT.md                       # Copy-paste agent prompt
     └── scripts/
-        └── security-audit.sh            # Fast local audit script
+        └── security-audit.sh               # Fast local audit script
 ```
 
 ---
@@ -79,12 +99,18 @@ Every project that uses this skill must pass these checks before merge:
 - [ ] No API keys, database URLs, or private tokens exist in frontend bundles
 - [ ] All secrets are read from environment variables on the backend
 - [ ] User input is validated on the server, escaped on output, and sanitized if HTML is allowed
+- [ ] Database queries use parameterized statements or ORM methods
+- [ ] No user input reaches shell, eval, exec, or raw SQL
+- [ ] File uploads use allow-list MIME/types, random IDs, and size limits
 - [ ] Content Security Policy blocks inline scripts and restricts script sources
 - [ ] Security headers are set (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, etc.)
+- [ ] CORS restricts origins on authenticated endpoints (no `*`)
 - [ ] LLM system prompts are isolated from user content and outputs are validated against a schema
+- [ ] AI API calls are rate-limited and cost-capped
 - [ ] Resource access checks confirm the logged-in user owns the requested resource
 - [ ] `.env` files are in `.gitignore` and an `env.example` is committed
 - [ ] Pre-commit hook or CI scans for secrets before code reaches GitHub
+- [ ] Dependencies are scanned for known vulnerabilities in CI
 
 The full version lives in [`references/security-checklist.md`](skills/software-development/safecoder/references/security-checklist.md).
 
@@ -95,11 +121,13 @@ The full version lives in [`references/security-checklist.md`](skills/software-d
 ```python
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
-from fastapi import FastAPI
+from slowapi.errors import RateLimitExceeded
+from fastapi import FastAPI, Request
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.post("/auth/signup")
 @limiter.limit("5/minute")
@@ -120,7 +148,7 @@ More patterns in [`references/rate-limiting-patterns.md`](skills/software-develo
 ```javascript
 const supabase = createClient(
   "https://your-project.supabase.co",  // public URL is fine
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."  // NEVER put service-role key here
+  "eyJhbG...VCJ9..."  // NEVER put service-role key here
 );
 ```
 
@@ -132,15 +160,37 @@ const supabase = createClient(
 
 ---
 
+## Local audit
+
+Copy `scripts/security-audit.sh` into your project root and run:
+
+```bash
+bash scripts/security-audit.sh
+```
+
+It checks for:
+
+- Committed `.env` files
+- Missing `.gitignore` entries
+- Possible secrets in source
+- Backend secrets in frontend paths
+- Dangerous functions (`eval`, `innerHTML`, etc.)
+- SQL string formatting
+- Wildcard CORS
+- Dependency vulnerabilities
+
+---
+
 ## Why this exists
 
-AI coding agents optimize for "does it run?" not "is it safe?". This skill adds a security layer to every generated feature so you don't wake up to a $5,000 OpenAI bill or a spammed database.
+AI coding agents optimize for "does it run?" not "is it safe?". SafeCoder adds a security layer to every generated feature so you don't wake up to a $5,000 OpenAI bill, a spammed database, or leaked customer data.
 
 It is opinionated on purpose:
 
 1. **Secure by default** — turn off protections explicitly, not accidentally.
 2. **Agent-readable** — written as instructions an LLM can follow.
 3. **Framework-agnostic** — works with Next.js, FastAPI, Node, Rails, Laravel, Tauri, etc.
+4. **Actionable** — every rule comes with code examples and a verification step.
 
 ---
 
