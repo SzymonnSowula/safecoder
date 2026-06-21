@@ -65,7 +65,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main
 Or install through npm:
 
 ```bash
-npx safecoder install
+npx @szymonsdev/safecoder install
 ```
 
 It copies the skill into `~/.hermes/skills/software-development/safecoder/` and adds aliases:

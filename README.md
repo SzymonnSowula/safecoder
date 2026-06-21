@@ -40,7 +40,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/SzymonnSowula/safecoder/main
 Lub przez npm:
 
 ```bash
-npx safecoder install
+npx @szymonsdev/safecoder install
 ```
 
 To dodaje skill i aliasy:
@@ -64,7 +64,7 @@ npx skills add SzymonnSowula/safecoder@safecoder
 ### Initialize a project
 
 ```bash
-npx safecoder init
+npx @szymonsdev/safecoder init
 ```
 
 Tworzy w projekcie:
@@ -95,7 +95,7 @@ safecoder/
 ├── install.sh                         # One-line installer for Hermes
 ├── init-project.sh                    # Adds SafeCoder files to a project
 ├── bin/
-│   └── cli.js                            # npx safecoder install / init
+│   └── cli.js                            # npx @szymonsdev/safecoder install / init
 ├── scripts/
 │   └── sync-vercel-skill.sh            # Syncs skill layout for Vercel Skills
 ├── .github/workflows/security-audit.yml  # CI workflow
@@ -252,7 +252,7 @@ PRs welcome. Open an issue if you find a common AI-generated vulnerability that 
 3. Publish from the repo root:
    ```bash
    cd safecoder
-   npm publish --access public
+   npm publish --access=public
    ```
 
 After the first publish, you can also enable the GitHub Action `.github/workflows/npm-publish.yml` by adding an `NPM_TOKEN` secret to the repository settings. Then every GitHub release will auto-publish.
