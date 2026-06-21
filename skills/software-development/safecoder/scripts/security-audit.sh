@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# AppSec Guardian quick local audit
+# SafeCoder quick local audit
 # Run from the root of your project.
 
 set -euo pipefail
@@ -16,7 +16,7 @@ log_ok() { echo -e "${GREEN}[OK]${NC} $1"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; ((WARNINGS++)) || true; }
 log_error() { echo -e "${RED}[FAIL]${NC} $1"; ((ERRORS++)) || true; }
 
-echo "== AppSec Guardian Quick Audit =="
+echo "== SafeCoder Quick Audit =="
 echo ""
 
 # 1. Check for .env files in git

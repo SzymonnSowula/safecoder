@@ -1,4 +1,4 @@
-# 🛡️ AppSec Guardian
+# 🛡️ SafeCoder
 
 > Security guardrails for AI coding agents. Stop shipping apps with API keys in the frontend, missing rate limits, and open signup spam.
 
@@ -29,19 +29,19 @@ Built for **Claude Code**, **Codex**, **OpenCode**, **Hermes Agent**, and any ot
 
 ```bash
 # Clone this repo
-git clone https://github.com/SzymonnSowula/app-sec-guardian.git
+git clone https://github.com/SzymonnSowula/safecoder.git
 
 # Copy the skill into your Hermes skills directory
-cp -r app-sec-guardian/skills/software-development/app-sec-guardian \
+cp -r safecoder/skills/software-development/safecoder \
   ~/.hermes/skills/software-development/
 
 # Use it in any session
-# "Apply AppSec Guardian to this project before we finish."
+# "Apply SafeCoder to this project before we finish."
 ```
 
 ### Use with Claude Code / Codex / OpenCode
 
-Copy `skills/software-development/app-sec-guardian/SKILL.md` into your project as `AGENT_SECURITY.md` (or paste it into context) and tell the agent:
+Copy `skills/software-development/safecoder/SKILL.md` into your project as `AGENT_SECURITY.md` (or paste it into context) and tell the agent:
 
 > "Follow the security requirements in AGENT_SECURITY.md for every feature you build."
 
@@ -50,9 +50,9 @@ Copy `skills/software-development/app-sec-guardian/SKILL.md` into your project a
 ## What's inside
 
 ```
-app-sec-guardian/
+safecoder/
 ├── README.md
-└── skills/software-development/app-sec-guardian/
+└── skills/software-development/safecoder/
     ├── SKILL.md                         # Main agent instructions
     ├── references/
     │   ├── security-checklist.md        # Pre-ship checklist
@@ -86,7 +86,7 @@ Every project that uses this skill must pass these checks before merge:
 - [ ] `.env` files are in `.gitignore` and an `env.example` is committed
 - [ ] Pre-commit hook or CI scans for secrets before code reaches GitHub
 
-The full version lives in [`references/security-checklist.md`](skills/software-development/app-sec-guardian/references/security-checklist.md).
+The full version lives in [`references/security-checklist.md`](skills/software-development/safecoder/references/security-checklist.md).
 
 ---
 
@@ -109,7 +109,7 @@ def signup(request: Request):
 
 > Never rate-limit by email alone. An attacker rotates emails every request.
 
-More patterns in [`references/rate-limiting-patterns.md`](skills/software-development/app-sec-guardian/references/rate-limiting-patterns.md).
+More patterns in [`references/rate-limiting-patterns.md`](skills/software-development/safecoder/references/rate-limiting-patterns.md).
 
 ---
 

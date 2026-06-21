@@ -1,5 +1,5 @@
 ---
-name: app-sec-guardian
+name: safecoder
 description: "Use when an AI coding agent is building or reviewing a web app, API, or desktop app and you want security guardrails applied by default: rate limiting, email verification, secret handling, XSS/CSRF/CSP hardening, prompt injection defense, and authorization."
 version: 1.0.0
 author: Hermes Agent
@@ -11,7 +11,7 @@ metadata:
     related_skills: [requesting-code-review, systematic-debugging, nextjs-development]
 ---
 
-# AppSec Guardian
+# SafeCoder
 
 Apply security-by-default to every feature an AI coding agent builds. This skill covers rate limiting, email verification, secret storage, XSS/CSRF/CSP hardening, prompt injection defense, authorization, and safe dependency practices.
 
